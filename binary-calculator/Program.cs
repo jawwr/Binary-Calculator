@@ -54,6 +54,7 @@ namespace binary_calculator
             switch (id)
             {
                 case "AdditionalCode":
+                    AdditionalCode.AdditionalBinCode();
                     break;
                 case "AdditionOfIntegers":
                     AdditionOfIntegers.Additation();

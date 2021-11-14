@@ -14,37 +14,47 @@ namespace binary_calculator
             Console.WriteLine();
 
             string firstBin = string.Empty;
-            string secondBin = string.Empty;
+            string secondBin = TranslationIntoSystems.ToBin(second);
             bool additional = false;
             if (first < 0)
             {
-                (firstBin, additional) = NegativeValue.Negative(first);
+                Console.WriteLine($"Так как первое число отрицательное, мы сначала переводим его в двоичную систему по модулю: {TranslationIntoSystems.ToBin(first)}");
+                (firstBin, additional) = NegativeValue.AdditionalCode(first);
+                Console.WriteLine($"Затем в полученной записи, мы инверсируем все биты и добавляем незначущую \"1\" в начало: {BinaryOperation.Minus(firstBin,"1")}");
+                Console.WriteLine("Далее к полученной записи мы прибавляем \"1\"");
+                Console.WriteLine($"Полученный результат: {firstBin}\n");
             }
             else
             {
                 firstBin = TranslationIntoSystems.ToBin(first);
-                firstBin = BinaryOperation.AddNonSignZero(firstBin,firstBin.Length);
+                firstBin = BinaryOperation.AddNonSignZero(firstBin, Math.Max(firstBin.Length,secondBin.Length));
+                Console.WriteLine($"Так как первое число не отрицательное, мы просто переводим его в двоичную систему и добавляем незначущие нули: {firstBin}\n");
             }
 
             if (second < 0)
             {
-                (secondBin, additional) = NegativeValue.Negative(second);
+                Console.WriteLine($"Так как второе отрицательное, мы сначала переводим его в двоичную систему по модулю: {TranslationIntoSystems.ToBin(second)}");
+                (secondBin, additional) = NegativeValue.AdditionalCode(second);
+                Console.WriteLine($"Затем в полученной записи, мы инверсируем все биты и добавляем незначущую \"1\" в начало: {BinaryOperation.Minus(secondBin,"1")}");
+                Console.WriteLine("Далее к полученной записи мы прибавляем \"1\"");
+                Console.WriteLine($"Полученный результат: {secondBin}\n");
             }
             else
             {
                 secondBin = TranslationIntoSystems.ToBin(second);
                 secondBin = BinaryOperation.AddNonSignZero(secondBin, secondBin.Length);
+                Console.WriteLine($"Так как второе число не отрицательное, мы просто переводим его в двоичную систему и добавляем незначущие нули: {secondBin}\n");
             }
-
-            Console.WriteLine(firstBin);
-            Console.WriteLine(secondBin);
-            (string result,bool negative)= BinaryOperation.Result(firstBin, secondBin, additional);
-            Console.WriteLine(result);
-            int resultDec = negative
-                ? -TranslationIntoSystems.ToDec(result)
-                : TranslationIntoSystems.ToDec(result);
-            Console.WriteLine(resultDec);
-            Console.Read();
+            
+            // Console.WriteLine(firstBin);
+            // Console.WriteLine(secondBin);
+            (string resultBin,bool isnegative)= BinaryOperation.Result(firstBin, secondBin, additional);
+            Console.WriteLine($"Результат побитового сложения будет равен {firstBin} + {secondBin} = {resultBin}\n");
+            int resultDec = isnegative
+                ? -TranslationIntoSystems.ToDec(resultBin)
+                : TranslationIntoSystems.ToDec(resultBin);
+            Console.WriteLine($"Далее полученный результат мы просто переводим в двоичную систему счисления: {resultDec}\n");
+            if(Console.ReadLine() == string.Empty) return;
         }
     }
 }

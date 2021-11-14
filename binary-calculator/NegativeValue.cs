@@ -2,7 +2,7 @@
 {
     public class NegativeValue
     {
-        public static (string,bool) Negative(int number)
+        public static (string,bool) AdditionalCode(int number)
         {
             string firstBin = TranslationIntoSystems.ToBin(number);
             firstBin = BinaryOperation.Inverse(firstBin);
