@@ -80,6 +80,21 @@ namespace binary_calculator
         {
             return num.Replace('0', ' ').Replace('1','0').Replace(' ','1');
         }
-    }
+        public static (string, bool) Result(string first,string second, bool additional)
+        {
+            bool negative = false;
+            string result = BinaryOperation.Plus(first, second);
+            if(result.Length > Math.Max(first.Length,second.Length))
+                result = result.Remove(0, 1);
+            
+            if (additional)
+            {
+                result = BinaryOperation.Minus(result, "1");
+                result = BinaryOperation.Inverse(result);
+                negative = true;
+            }
 
+            return (result, negative);
+        }
+    }
 }
