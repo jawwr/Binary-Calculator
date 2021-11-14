@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Text;
 
 namespace binary_calculator
@@ -11,38 +12,41 @@ namespace binary_calculator
             int first = int.Parse(Console.ReadLine());
             Console.Write("Введите второе число: ");
             int second = int.Parse(Console.ReadLine());
-            
-            string firstBin = ToBin(first);
-            string secondBin = ToBin(second);
-            
-            firstBin = NonSignZero(firstBin, Math.Max(firstBin.Length, secondBin.Length));
-            secondBin = NonSignZero(secondBin, firstBin.Length);
-            
-            if(first < 0)
-                firstBin = NegativeValue(firstBin);
-                
-            if(second < 0)
-                secondBin = NegativeValue(secondBin);
-
             Console.WriteLine();
+
+            string firstBin = string.Empty;
+            string secondBin = string.Empty;
+            bool additional = false;
+            if (first < 0)
+            {
+                (firstBin, additional) = NegativeValue.Negative(first);
+            }
+            else
+            {
+                firstBin = ToBin(first);
+                firstBin = BinaryOperation.AddNonSignZero(firstBin,firstBin.Length);
+            }
+
+            if (second < 0)
+            {
+                (secondBin, additional) = NegativeValue.Negative(second);
+            }
+            else
+            {
+                secondBin = ToBin(second);
+                secondBin = BinaryOperation.AddNonSignZero(secondBin, secondBin.Length);
+            }
+
             Console.WriteLine(firstBin);
             Console.WriteLine(secondBin);
-            Console.WriteLine();
-            string binResult;
-            int decResult;
-            bool isNegative = false;
-            if (first >= 0 && second >= 0)
-                binResult = BinPlus(firstBin, secondBin);
-            else
-                (binResult, isNegative) = NegativeResult(firstBin, secondBin);
-            decResult = isNegative 
-                ? -ToDec(binResult) 
-                : ToDec(binResult);
-            
-            Console.WriteLine(binResult);
-            Console.WriteLine(decResult);
+            (string result,bool negative)= Result(firstBin, secondBin, additional);
+            Console.WriteLine(result);
+            int resultDec = negative
+                ? -ToDec(result)
+                : ToDec(result);
+            Console.WriteLine(resultDec);
         }
-        static string ToBin(int number)
+        public static string ToBin(int number)
         {
             number = Math.Abs(number);
             StringBuilder result = new StringBuilder();
@@ -66,90 +70,21 @@ namespace binary_calculator
             }
             return result;
         }
-        static string BinPlus(string number1, string number2)
-        {
-            StringBuilder result = new StringBuilder();
-            int diff = 0;
-            int i = number1.Length - 1;
-            while (i >= 0 || diff != 0)
-            {
-                int first = default;
-                int second = default;
-                if (i != -1)
-                {
-                    first = int.Parse(number1[i].ToString());
-                    second = int.Parse(number2[i].ToString());
-                }
-                result.Insert(0,(first + second + diff) % 2);
-                diff = (first + second + diff) > 1 
-                    ? 1 
-                    : 0;
-                i--;
-            }
-            return result.ToString();
-        }
-        static string Inverse(string num)
-        {
-            return num.Replace('0', ' ').Replace('1','0').Replace(' ','1');
-            // return inverseNumber;
-        }
-
-        static string NegativeValue(string number)
-        {
-            string negativeNumber = Inverse(number);
-            // string point = "1";
-            // while (number.Length > point.Length)
-            //     point = point.Insert(0, "0");
-            // string result = BinPlus(negativeNumber, point);
-            return negativeNumber;
-        }
-
-        static (string, bool) NegativeResult(string first,string second)
+        static (string, bool) Result(string first,string second, bool additional)
         {
             bool negative = false;
-            string result = BinPlus(first, second);
-            // Console.WriteLine($"\t{result}");
-            // if (result.Length > first.Length)
-            result = result.Remove(0, 1);
+            string result = BinaryOperation.Plus(first, second);
+            if(result.Length > Math.Max(first.Length,second.Length))
+                result = result.Remove(0, 1);
             
-            if (result[0] == '1')
+            if (additional)
             {
-                result = Inverse(result);
+                result = BinaryOperation.Minus(result, "1");
+                result = BinaryOperation.Inverse(result);
                 negative = true;
-            }
-            else
-            {
-                string point = "1";
-                while (result.Length > point.Length)
-                    point = point.Insert(0, "0");
-                result = BinPlus(result, point);
-                // StringBuilder resultMinus = new StringBuilder();
-                // int diff = 0;
-                // for (int i = result.Length - 1; i >= 0; i--)
-                // {
-                //     int firstnum = int.Parse(result[i].ToString());
-                //     int secondnum = int.Parse(point[i].ToString());
-                //     resultMinus.Insert(0, Math.Abs((firstnum - secondnum + diff) % 2));
-                //     diff = (firstnum - secondnum + diff) < 0
-                //         ? -1
-                //         : 0;
-                // }
             }
 
             return (result, negative);
-        }
-        static string NonSignZero(string str, int maxLength)
-        {
-            if(maxLength <= 8)
-                while (str.Length < 8)
-                    str = str.Insert(0,"0");
-            else if(maxLength > 8 && maxLength <= 16)
-                while (str.Length < 16)
-                    str = str.Insert(0,"0");
-            else if(maxLength > 16 && maxLength <= 32)
-                while (str.Length < 32)
-                    str = str.Insert(0,"0");
-            return str;
         }
     }
 }
