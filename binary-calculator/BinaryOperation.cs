@@ -83,14 +83,14 @@ namespace binary_calculator
         public static (string, bool) Result(string first,string second, bool additional)
         {
             bool negative = false;
-            string result = BinaryOperation.Plus(first, second);
+            string result = Plus(first, second);
             if(result.Length > Math.Max(first.Length,second.Length))
                 result = result.Remove(0, 1);
             
             if (additional)
             {
-                result = BinaryOperation.Minus(result, "1");
-                result = BinaryOperation.Inverse(result);
+                result = Minus(result, "1");
+                result = Inverse(result);
                 negative = true;
             }
 

@@ -10,14 +10,14 @@ namespace binary_calculator
             Console.Clear();
             Console.Write("Введите число: ");
             int number = int.Parse(Console.ReadLine());
-            string numberBin = string.Empty;
+            string numberBin = TranslationIntoSystems.ToBin(number);
             bool NaN;
             try
             {
                 if (number >= 0)
                     throw new Exception("Число не отрицательное");
                 Console.WriteLine($"Так как число отрицательное, мы сначала переводим его в двоичную систему по модулю: {TranslationIntoSystems.ToBin(number)}");
-                (numberBin,NaN)= NegativeValue.AdditionalCode(number);
+                (numberBin,NaN)= NegativeValue.AdditionalCode(number, numberBin.Length);
                 Console.WriteLine($"Затем в полученной записи, мы инверсируем все биты и добавляем незначущую \"1\": {BinaryOperation.Minus(numberBin,"1")}");
                 Console.WriteLine("Далее к полученной записи мы прибавляем \"1\"");
                 Console.WriteLine($"Полученный результат: {numberBin}");
